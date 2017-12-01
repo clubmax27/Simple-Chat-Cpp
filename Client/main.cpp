@@ -21,51 +21,58 @@ int ClientThread(int ID)
     char buffer[256];
     char message[256];
 
-    for(;; Sleep(10))
+    for(;; Sleep(10))//Always, but sleep(10) reduce lag
     {
         sameID:
-        int numRead = recv(sConnect, buffer, sizeof(buffer), NULL);
-        if (numRead < 1) break;
+        int numRead = recv(sConnect, buffer, sizeof(buffer), NULL);//recieve the mesages from the client
+        if (numRead < 1) break;//if error, restart the loop
 
         else
         {
-            int RecvID = buffer[0] - '0';
+            int RecvID = buffer[0] - '0';//Getting the first digit
             RecvID *= 10;
-            RecvID += buffer[1] - '0';
+            RecvID += buffer[1] - '0';//Getting the 2nd digit
 
-            if(RecvID == ID)
+            if(RecvID == ID)//If the message is ours
             {
                 goto sameID;
             }
 
             for(int i = 0; i < 256; i++)
             {
-                message[i] = buffer[i+2];
+                message[i] = buffer[i+2];//Stock the real message into char* message
             }
 
-            cout << "<Client " << RecvID + 1 << ":> " << message << endl;
+            cout << "<Client " << RecvID + 1 << ":> " << message << endl; // Show the message
         }
     }
 
     return 0;
 }
 
+int InitWinSock()
+{
+    int RetVal = 0;
+    WSAData wsaData;
+    WORD DLLVersion = MAKEWORD(2,1);
+    RetVal = WSAStartup(DLLVersion, &wsaData);//Initialisation de WSA
+
+    return RetVal;
+
+}
+
 int main()
 {
-    system("cls");
+    system("cls");//Clear the command prompt
 
-    int RetVal = 0;
-
-    WSAData wsaData;
-    WORD DllVersion = MAKEWORD(2,1);
-    RetVal = WSAStartup(DllVersion, &wsaData);
+    int RetVal = InitWinSock();//Initialize WinSock
     if (RetVal != 0)
     {
         MessageBoxA(NULL, "Winsock startup failed", "Error", MB_OK | MB_ICONERROR);
         exit(1);
     }
 
-    sConnect = socket(AF_INET, SOCK_STREAM, NULL);
+    sConnect = socket(AF_INET, SOCK_STREAM, NULL);//create the client socket
 
     addr.sin_addr.s_addr = inet_addr("176.188.41.30");
     addr.sin_port        = htons(1234);
@@ -75,32 +82,32 @@ int main()
     {
         cout << "Connecting to Masterserver" <<endl;
 
-        RetVal = connect(sConnect, (SOCKADDR*)&addr, sizeof(addr));
-        if (RetVal == 0) break;
+        RetVal = connect(sConnect, (SOCKADDR*)&addr, sizeof(addr));//connect to the server
+        if (RetVal == 0) break;//if didn't succeded
 
         MessageBoxA(NULL, "Could not connect to server", "Error", MB_OK | MB_ICONERROR);
     }
-    while (true);
+    while (true);//While not connected
 
     cout << "Connected!" << endl;
 
     char cID[64];
     ZeroMemory(cID, 64);
 
-    recv(sConnect, cID, 64, NULL);
+    recv(sConnect, cID, 64, NULL);//Recieveing the ID of our client
     int ID = atoi(cID);
 
     cout << "You are Client No " << ID + 1 << endl;
 
-    CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE) ClientThread, (LPVOID)(ID), NULL, NULL);
+    CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE) ClientThread, (LPVOID)(ID), NULL, NULL);//Create a thread for listeling to other client message
 
-    send(sConnect, "Connected!", 10, NULL);
+    send(sConnect, "Connected!", 10, NULL);//Sending to the server the message "Connected!"
     for(;; Sleep(10))
     {
         string buffer;
-        getline(cin, buffer);
-        if (send(sConnect, buffer.c_str(), buffer.length(), NULL) < 1) exit(1);
-        if(buffer == "exit") return 0;
+        getline(cin, buffer);//Get what our client says
+        if (send(sConnect, buffer.c_str(), buffer.length(), NULL) < 1) exit(1);//If the send didn't succeded, exit the program
+        if(buffer == "exit") return 0;//If the user said "exit" we close the program
     }
 
     return 0;
