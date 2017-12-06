@@ -171,7 +171,15 @@ int main()
                     }
                 }
 
-                Connections[FreeID] = sConnect; //le tableau de socket Connection prend en charge la socket du client
+               if(FreeID != 404)//Si une place est libre
+                {
+                    Connections[FreeID] = sConnect; //le tableau de socket Connection prend en charge la socket du client
+                }
+                else
+                {
+                    MessageBoxA(NULL, "Server full", "Error",MB_OK | MB_ICONERROR);
+                    return 1;
+                }
 
                 char* ID = new char[64];
                 ZeroMemory(ID, sizeof(ID));

@@ -72,15 +72,21 @@ int main()
         exit(1);
     }
 
-    sConnect = socket(AF_INET, SOCK_STREAM, NULL);//create the client socket
+    cout << "What IP do you want to connect to ?" << endl;
 
-    addr.sin_addr.s_addr = inet_addr("176.188.41.30");
+    string IP;
+    getline(cin,IP);
+
+    sConnect = socket(AF_INET, SOCK_STREAM, NULL);
+
+    addr.sin_addr.s_addr = inet_addr(IP.c_str());
     addr.sin_port        = htons(1234);
     addr.sin_family      = AF_INET;
 
+
     do
     {
-        cout << "Connecting to Masterserver" <<endl;
+        cout << "Connecting to server..." <<endl;
 
         RetVal = connect(sConnect, (SOCKADDR*)&addr, sizeof(addr));//connect to the server
         if (RetVal == 0) break;//if didn't succeded
@@ -90,6 +96,7 @@ int main()
     while (true);//While not connected
 
     cout << "Connected!" << endl;
+    cout << "--------------------------------------" << endl;
 
     char cID[64];
     ZeroMemory(cID, 64);
