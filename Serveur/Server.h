@@ -19,8 +19,6 @@ private:
     SOCKADDR_IN addr;
     SOCKET sListen;
     SOCKET sConnect;
-    int addrlen = sizeof(addr);
-    int ConCounter = 1;
 };
 
 #endif // SERVER_H_INCLUDED

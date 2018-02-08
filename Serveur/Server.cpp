@@ -58,6 +58,7 @@ Server::Server(int port)
     {
         cout << "Waiting for a client connection..." <<endl;
     }
+    int addrlen = sizeof(addr);
 
     //Boucle infinie
     while(1)
