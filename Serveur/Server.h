@@ -11,14 +11,15 @@ class Server
 {
 public:
     Server(int port);
-    int FreeID;
-    SOCKET *Connections;
+    friend int ServerThread(Server* server);
     void DistributeMessage(char* message);
     void DistributeMessage(string message);
 private:
     SOCKADDR_IN addr;
     SOCKET sListen;
     SOCKET sConnect;
+    SOCKET *Connections;
+    int FreeID;
 };
 
 #endif // SERVER_H_INCLUDED
