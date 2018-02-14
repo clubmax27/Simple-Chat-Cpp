@@ -9,9 +9,14 @@
 
 using namespace std;
 
-int ServerThread(Server* server);
+int ServerThread(struct parameters* args);
+struct parameters
+{
+    Server* server;
+    int ID;
+};
 
-int InitWinSock()
+inline int InitWinSock()
 {
     int RetVal = 0;
     WSAData wsaData;
@@ -20,7 +25,7 @@ int InitWinSock()
     return RetVal;
 }
 
-Server::Server(int port)
+inline Server::Server(int port)
 {
     int RetVal = 0;
     RetVal = InitWinSock();
@@ -68,7 +73,7 @@ Server::Server(int port)
         {
             if(sConnect!= INVALID_SOCKET)//Si aucune erreur n'a eu lieu lors de l'acceuil du client
             {
-                FreeID = 404;
+                int FreeID = 404;
                 for(int i = 0; i < 64; i++)
                 {
                     if(Connections[i] == 0)
@@ -93,17 +98,20 @@ Server::Server(int port)
                 ss << FreeID;
                 string temp = ss.str();//Convertion en string de la int ConCounter
                 strcpy(ID, temp.c_str());//conertion en char* de la string temp
-
                 send(Connections[FreeID], ID, sizeof(ID), NULL);//Donner au client son ID
 
-                CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE) ServerThread, this, NULL, NULL);//On crée un thread pour gérer les imputs des clients, qui lance la fonction ServerThread
+                struct parameters args;
+                args.server = this;
+                args.ID = FreeID;
+
+                CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE) ServerThread, &args, NULL, NULL);//On crée un thread pour gérer les imputs des clients, qui lance la fonction ServerThread
             }
         }
         Sleep(50);
     }
 }
 
-void Server::DistributeMessage(char* message)
+inline void Server::DistributeMessage(char* message)
 {
     int bytesSend = INVALID_SOCKET;
 
@@ -113,7 +121,7 @@ void Server::DistributeMessage(char* message)
     }
 }
 
-void Server::DistributeMessage(string message)
+inline void Server::DistributeMessage(string message)
 {
     char sendbuf[256];
     int bytesSend = INVALID_SOCKET;

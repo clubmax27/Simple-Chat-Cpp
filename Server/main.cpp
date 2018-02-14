@@ -7,10 +7,10 @@ int main()
     Server server(1234);
 }
 
-int ServerThread(Server* server)
+int ServerThread(struct parameters* args)
 {
-    int ID = server->FreeID;
-    SOCKET* Connections = server->Connections;
+    int ID = args->ID;
+    SOCKET* Connections = args->server->Connections;
     int bytesRecv = SOCKET_ERROR;
     int bytesSend = SOCKET_ERROR;
     char recvbuf[256] = "";
@@ -43,8 +43,8 @@ int ServerThread(Server* server)
                     ss << ID << "Disconnected...";
                     message = ss.str();//Convertion en string de la int ConCounter
 
-                    server->DistributeMessage(message);
-                    server->Connections[ID] = 0;
+                    args->server->DistributeMessage(message);
+                    Connections[ID] = 0;
                     return 0;
                 }
                 else
@@ -62,8 +62,8 @@ int ServerThread(Server* server)
                 ss << ID << "Disconnected...";
                 message = ss.str();//Convertion en string de la int ConCounter
 
-                server->DistributeMessage(message);
-                server->Connections[ID] = 0;
+                args->server->DistributeMessage(message);
+                Connections[ID] = 0;
                 return 0;
             }
         }
@@ -82,6 +82,6 @@ int ServerThread(Server* server)
         string temp = ss.str();//Convertion en string de la int ConCounter
         strcpy(sendbuf, temp.c_str());//conertion en char* de la string temp
 
-        server->DistributeMessage(sendbuf);
+        args->server->DistributeMessage(sendbuf);
     }
 }

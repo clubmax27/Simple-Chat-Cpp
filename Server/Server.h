@@ -3,6 +3,7 @@
 #include <string>
 
 using namespace std;
+struct parameters;
 
 #ifndef SERVER_H_INCLUDED
 #define SERVER_H_INCLUDED
@@ -11,7 +12,7 @@ class Server
 {
 public:
     Server(int port);
-    friend int ServerThread(Server* server);
+    friend int ServerThread(struct parameters* args);
     void DistributeMessage(char* message);
     void DistributeMessage(string message);
 private:
@@ -19,7 +20,6 @@ private:
     SOCKET sListen;
     SOCKET sConnect;
     SOCKET *Connections;
-    int FreeID;
 };
 
 #endif // SERVER_H_INCLUDED
