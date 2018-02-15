@@ -40,7 +40,14 @@ int ServerThread(struct parameters* args)
                     string message;
 
                     stringstream ss;
-                    ss << ID << "Disconnected...";
+                    if(ID <= 9)
+                    {
+                        ss << "0" << ID << "Disconnected...";
+                    }
+                    else
+                    {
+                        ss << ID << "Disconnected...";
+                    }
                     message = ss.str();//Convertion en string de la int ConCounter
 
                     args->server->DistributeMessage(message);

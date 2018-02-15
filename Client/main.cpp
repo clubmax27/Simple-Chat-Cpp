@@ -10,9 +10,7 @@
 using namespace std;
 
 SOCKADDR_IN addr;
-
 SOCKET sConnect;
-
 
 int ClientThread(int ID)
 {
@@ -23,7 +21,6 @@ int ClientThread(int ID)
 
     for(;; Sleep(10))//Always, but sleep(10) reduce lag
     {
-        sameID:
         int numRead = recv(sConnect, buffer, sizeof(buffer), NULL);//recieve the mesages from the client
         if (numRead < 1) break;//if error, restart the loop
 
@@ -35,7 +32,7 @@ int ClientThread(int ID)
 
             if(RecvID == ID)//If the message is ours
             {
-                goto sameID;
+                continue;
             }
 
             for(int i = 0; i < 256; i++)
