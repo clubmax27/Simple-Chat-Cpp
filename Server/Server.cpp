@@ -9,7 +9,7 @@
 
 using namespace std;
 
-int ServerThread(struct parameters* args);
+int ServerThread(LPVOID param);
 struct parameters
 {
     Server* server;
@@ -100,11 +100,11 @@ inline Server::Server(int port)
                 strcpy(ID, temp.c_str());//conertion en char* de la string temp
                 send(Connections[FreeID], ID, sizeof(ID), NULL);//Donner au client son ID
 
-                struct parameters args;
-                args.server = this;
-                args.ID = FreeID;
+                parameters* args = new parameters;
+                args->server = this;
+                args->ID = FreeID;
 
-                CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE) ServerThread, &args, NULL, NULL);//On crée un thread pour gérer les imputs des clients, qui lance la fonction ServerThread
+                CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE) ServerThread, (LPVOID)args, NULL, NULL);//On crée un thread pour gérer les imputs des clients, qui lance la fonction ServerThread
             }
         }
         Sleep(50);
