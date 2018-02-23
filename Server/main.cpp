@@ -7,8 +7,11 @@ int main()
     Server server(1234);
 }
 
-int ServerThread(struct parameters* args)
+int ServerThread(LPVOID param)
 {
+    struct parameters* args;
+    args = reinterpret_cast<parameters*>(param); //Transform LPVOID into parameters*
+
     int ID = args->ID;
     SOCKET* Connections = args->server->Connections;
     int bytesRecv = SOCKET_ERROR;

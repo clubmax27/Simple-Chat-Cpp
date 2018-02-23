@@ -12,7 +12,7 @@ class Server
 {
 public:
     Server(int port);
-    friend int ServerThread(struct parameters* args);
+    friend int ServerThread(LPVOID param);
     void DistributeMessage(char* message);
     void DistributeMessage(string message);
 private:

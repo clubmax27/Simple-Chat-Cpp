@@ -13,7 +13,8 @@ using namespace std;
 int ClientThread(LPVOID param)
 {
     struct parameters* args;
-    args = reinterpret_cast<parameters*>(param);
+    args = reinterpret_cast<parameters*>(param); //Transform LPVOID into parameters*
+
     int ID = args->ID;
     SOCKET sConnect = args->client->sConnect;
     char buffer[256];
