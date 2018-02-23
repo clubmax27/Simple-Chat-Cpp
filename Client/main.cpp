@@ -10,8 +10,10 @@
 
 using namespace std;
 
-int ClientThread(struct parameters* args)
+int ClientThread(LPVOID param)
 {
+    struct parameters* args;
+    args = reinterpret_cast<parameters*>(param);
     int ID = args->ID;
     SOCKET sConnect = args->client->sConnect;
     char buffer[256];
@@ -41,6 +43,8 @@ int ClientThread(struct parameters* args)
             cout << "<Client " << RecvID + 1 << ":> " << message << endl; // Show the message
         }
     }
+    delete args->client;
+    delete args;
     return 0;
 }
 

@@ -11,7 +11,7 @@
 using namespace std;
 
 int InitWinSock();
-int ClientThread(struct parameters* args);
+int ClientThread(LPVOID param);
 struct parameters
 {
     Client* client;
@@ -54,11 +54,11 @@ Client::Client(string IP)
     cout << "You are Client No " << ID + 1 << endl;
     send(sConnect, "Connected!", 10, NULL);//Sending to the server the message "Connected!"
 
-    struct parameters args;
-    args.ID = ID;
-    args.client = this;
+    parameters* args = new parameters;
+    args->ID = ID;
+    args->client = this;
 
-    CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE) ClientThread, &args, NULL, NULL);//Create a thread for listeling to other client message
+    CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE) ClientThread, args, NULL, NULL);//Create a thread for listeling to other client message
 }
 
 int InitWinSock()

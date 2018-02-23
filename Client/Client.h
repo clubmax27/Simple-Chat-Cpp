@@ -12,7 +12,7 @@ class Client
 {
 public:
     Client(string IP);
-    friend int ClientThread(struct parameters* args);
+    friend int ClientThread(LPVOID param);
     friend int main();
 private:
     SOCKADDR_IN addr;
